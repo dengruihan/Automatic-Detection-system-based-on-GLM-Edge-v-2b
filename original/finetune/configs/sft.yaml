@@ -1,0 +1,39 @@
+data_config:
+  train_file: E:/CTB/train.jsonl
+  val_file: E:\CTB\test.jsonl
+  test_file: E:\CTB\test.jsonl
+  num_proc: 1
+
+freezeV: False
+max_input_length: 1024  # For Image Must larger than 578
+max_output_length: 8
+
+training_args:
+  bf16: True
+  # see `transformers.Seq2SeqTrainingArguments`
+  output_dir: E:\GLM-Edge-main\finetune\finetune_model
+  max_steps: 1000
+  # needed to be fit for the dataset
+  learning_rate: 5e-5
+  # settings for data loading
+  per_device_train_batch_size: 4
+  dataloader_num_workers: 16
+  remove_unused_columns: false
+  # settings for saving checkpoints
+  save_strategy: steps
+  save_steps: 50
+  # settings for logging
+  log_level: info
+  logging_strategy: steps
+  logging_steps: 10
+  # settings for evaluation
+  per_device_eval_batch_size: 16
+  eval_strategy: steps
+  eval_steps: 1000
+  # settings for optimizer
+  adam_epsilon: 1e-6
+  predict_with_generate: true
+  generation_config:
+    max_new_tokens: 512
+  # set your absolute deepspeed path here
+  deepspeed: configs/ds_zero_3.json

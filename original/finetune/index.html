@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>福寿螺卵检测系统</title>
+    <style>
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .upload-box { border: 2px dashed #ccc; padding: 40px; text-align: center; }
+        #progress { margin-top: 20px; height: 20px; background: #f0f0f0; }
+        #progress-bar { width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s; }
+        #status { margin-top: 10px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>福寿螺卵检测系统</h1>
+        <div class="upload-box">
+            <h3>上传图片压缩包（ZIP格式）</h3>
+            <input type="file" id="fileInput" accept=".zip">
+            <div id="progress">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="status">等待上传...</div>
+        </div>
+        <div id="results"></div>
+    </div>
+
+
+    <script>
+
+
+        async function handleResponse(response) {
+            const contentType = response.headers.get('content-type');
+            
+            if (contentType && contentType.includes('application/json')) {
+                return await response.json();
+            } else {
+                const text = await response.text();
+                throw new Error(`无效响应: ${text.slice(0, 100)}`);
+            }
+        }
+
+        // 修改上传处理逻辑
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await handleResponse(response);
+            // ...原有处理逻辑...
+        } catch (error) {
+            status.textContent = '错误: ' + error.message;
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        const progressBar = document.getElementById('progress-bar');
+        const status = document.getElementById('status');
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                status.textContent = '上传中...';
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // 开始轮询进度
+                const taskId = data.task_id;
+                pollProgress(taskId);
+                
+            } catch (error) {
+                status.textContent = '错误: ' + error.message;
+            }
+        });
+
+        async function pollProgress(taskId) {
+            const check = async () => {
+                const response = await fetch(`/progress/${taskId}`);
+                const data = await response.json();
+                
+                progressBar.style.width = data.progress + '%';
+                status.textContent = data.message;
+
+                if (data.progress < 100) {
+                    setTimeout(check, 1000);
+                } else {
+                    window.location.href = `/results/${taskId}`;
+                }
+            };
+            
+            check();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Golden Apple Snail Detection System</title>
+    <style>
+        /* 导航栏样式 */
+        nav {
+            background-color: #f5f5f5;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+        .english-title {
+            text-align: center;
+            margin: 25px 0;
+            color: #444;
+            font-size: 1.8em;
+            font-weight: 300;
+        }
+
+        /* 上传区域样式 */
+        .upload-box {
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+        .button-container {
+            display: inline-flex;
+            gap: 15px;
+            padding: 8px;
+            background: #ddd;
+            border-radius: 6px;
+        }
+        .upload-box button {
+            padding: 10px 25px;
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-box button:hover {
+            background: #4CAF50;
+            color: white;
+        }
+
+        /* 其他原有样式 */
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        #fileInput {
+            background-color: #000000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .result-section { 
+            margin-top: 30px; 
+        }
+        .progress { 
+            height: 20px; 
+            background: #f0f0f0; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+        .progress-bar { 
+            height: 100%; 
+            background: #4CAF50; 
+            transition: width 0.3s; 
+        }
+        .nav-buttons {
+            margin-left: auto;
+            display: flex;
+            gap: 20px;
+        }
+        .nav-button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #45a049;
+        }
+        #statusPanel { 
+            display: none; 
+        }
+        #resultSection { 
+            display: none; 
+        }
+
+
+        
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/logo.png" alt="Logo" style="width: 110%; height: 110%;">
+
+            </div>
+            <div class="nav-buttons">
+                <a href="http://aboutus.goldenapplesnail.top" class="nav-button">About Us</a>
+                <a href="http://www.goldenapplesnail.top" class="nav-button">Detect</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="english-title">Golden Apple Snail Detection System</h1>
+        
+        <div class="upload-box">
+            <div class="button-container">
+                <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                <button onclick="document.getElementById('fileInput').click()">Start Upload</button>
+                <button onclick="uploadFiles()">Upload</button>
+            </div>
+        </div>
+
+        <div id="statusPanel">
+            <h3>Processing progress</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 0%"></div>
+            </div>
+            <p id="statusText">Initializing...</p>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <h3>Test results</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <img src="/static/001.png" alt="Footer Image" style="width: 100%; display: block;">
+
+
+    <script>
+        async function uploadFiles() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+            
+            if (files.length === 0) {
+                alert('Please select at least one image file.');
+                return;
+            }
+
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('files', file);
+            }
+
+            document.getElementById('statusPanel').style.display = 'block';
+            updateProgress(10, 'Uploading files...');
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) throw new Error('Upload failed');
+                const data = await response.json();
+                
+                checkStatus(data.session_id);
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        async function checkStatus(sessionId) {
+            let attempts = 0;
+            const maxAttempts = 60;
+            
+            const check = async () => {
+                const response = await fetch(`/status/${sessionId}`);
+                const data = await response.json();
+                
+                if (data.status === 'complete') {
+                    showResult(sessionId);
+                } else if (attempts < maxAttempts) {
+                    attempts++;
+                    updateProgress(10 + Math.min(90, (attempts/maxAttempts)*90), 'Analyzing pictures...');
+                    setTimeout(check, 5000);
+                } else {
+                    alert('Processing timeout');
+                }
+            };
+            
+            check();
+        }
+
+        async function showResult(sessionId) {
+            const response = await fetch(`/result/${sessionId}`);
+            const data = await response.json();
+            
+            updateProgress(100, 'The analysis is complete');
+            document.getElementById('resultSection').style.display = 'block';
+            
+            let html = `<p>Detected ${data.total_images} image with eggs</p>`;
+            html += '<ul>';
+            for (const [filename, result] of Object.entries(data.results)) {
+                html += `<li>${filename}: ${result}</li>`;
+            }
+            html += '</ul>';
+            
+            document.getElementById('resultContent').innerHTML = html;
+        }
+
+        function updateProgress(percent, text) {
+            document.querySelector('.progress-bar').style.width = percent + '%';
+            document.getElementById('statusText').textContent = text;
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function() {
+            uploadFiles();
+        });
+    </script>
+</body>
+</html>

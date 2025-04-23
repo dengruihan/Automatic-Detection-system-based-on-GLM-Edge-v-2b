@@ -1,0 +1,55 @@
+data_config:
+  train_file: E:/CTB/train.jsonl
+  val_file: E:\CTB\test.jsonl
+  test_file: E:\CTB\test.jsonl
+  num_proc: 1
+
+freezeV: False
+max_input_length: 1024
+max_output_length: 8
+
+training_args:
+  bf16: True
+  output_dir: C:\GLM-Edge-main\finetune\finetune_model
+  max_steps: 1500
+  learning_rate: 1e-4
+  per_device_train_batch_size: 4
+  dataloader_num_workers: 10
+  remove_unused_columns: false
+  save_strategy: steps
+  save_steps: 50
+  log_level: info
+  logging_strategy: steps
+  logging_steps: 10
+  per_device_eval_batch_size: 16
+  eval_strategy: steps
+  eval_steps: 1000
+  predict_with_generate: true
+  generation_config:
+    max_new_tokens: 512
+
+peft_config:
+  peft_type: LORA
+  task_type: CAUSAL_LM
+  r: 8
+  lora_alpha: 32
+  lora_dropout: 0.1
+  target_modules: ["q_proj", "k_proj", "v_proj"]
+
+
+#  # 新增 DeepSpeed 配置
+#  deepspeed_config:
+#    enabled: true
+#    zero_optimization:
+#      stage: 2                # ZeRO 阶段2（平衡内存和速度）
+#      offload_optimizer:      # 将优化器状态卸载到CPU
+#        device: cpu
+#        pin_memory: true
+#      allgather_partitions: true
+#      reduce_bucket_size: 2e8
+#    gradient_accumulation_steps: auto
+#    train_batch_size: auto
+#    bf16:
+#      enabled: true           # 与 training_args.bf16 保持一致
+#    gradient_clipping: 1.0    # 梯度裁剪阈值
+#    steps_per_print: 100      # 日志打印间隔
