@@ -1,0 +1,8 @@
+flask
+werkzeug
+word2number
+pillow
+transformers
+torch
+opencv-python
+numpy
