@@ -1,9 +1,11 @@
 # GLM-Edge-V-2B--Monitoring_Species
-# 利用多模态大模型实现对福寿螺卵的快速统计
 Built with GLM-Edge
 
 <p align="center">
-👋 
+👋 联系作者在工作邮箱：Raymond.dengruihan@edu.yungu.org 或个人邮箱：551310554@qq.com 或个人电话：18368725059
+</p>
+<p align="center">
+工作邮箱不一定联系得上，如果没有及时回复请考虑另外的联系方式
 </p>
 
 这是一个基于由智谱AI开源的端侧多模态大模型GLM-Edge-V-2b的福寿螺卵自动统计系统
