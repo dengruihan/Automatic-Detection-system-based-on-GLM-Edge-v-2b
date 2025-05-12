@@ -37,4 +37,5 @@ Built with GLM-Edge
 使用 pip 安装依赖：pip install -r requirements.txt
 
 ### 从本地加载模型
-原始的模型应该从[🤗 Huggingface](https://huggingface.co/THUDM/glm-edge-1.5b-chat)<br>
+原始的模型应该从[🤗 Huggingface](https://huggingface.co/THUDM/glm-edge-1.5b-chat)<br>下载
+将模型下载到本地之后，将以上代码中的```将文本替换为你的模型路径```替换为你本地的```GLM-Edge—v-2B```文件夹的路径，即可从本地加载模型。
