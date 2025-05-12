@@ -20,5 +20,8 @@ Built with GLM-Edge
 该项目由2024-2025届CTB（China Thinks Big）比赛，”影视旋风“小队的创新项目发展而来，我们小队奋斗半年，最终产出了这样一个项目，我将会把我们在比赛期间内所完成的部分保存在本仓库的”Original“文件夹，保留一份我们的青春回忆以及奋斗历史。在这里感谢与我并肩作战的老师及同学们：Jie, Felcia, Alice, Carl, Robin。
 
 ## 项目更新
-2025年5月：上传了app.py和information.py，替换了了其中的文件路径，使用中文提示
+2025年5月：上传了'''app.py'''和information.py，替换了了其中的文件路径，使用中文提示
 2025年4月：上传original文件，该源文件直接复制自CTB竞赛时期的电脑文件夹
+
+## 模型介绍
+GLM-Edge-v-2B是智谱AI主要面向手机/车机
