@@ -1,8 +1,9 @@
 # GLM-Edge-V-2B--Monitoring_Species
+# 利用多模态大模型实现对福寿螺卵的快速统计
 Built with GLM-Edge
 
 <p align="center">
-👋 加入我们的 <a href="https://discord.gg/8cnQKdAprg" target="_blank">Discord</a>, <a href="https://x.com/Zai_org" target="_blank">X</a> 和 <a href="resources/WECHAT.md" target="_blank"> 微信 </a>
+👋 
 </p>
 
 这是一个基于由智谱AI开源的端侧多模态大模型GLM-Edge-V-2b的福寿螺卵自动统计系统
