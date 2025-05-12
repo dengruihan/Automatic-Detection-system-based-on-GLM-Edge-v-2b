@@ -30,4 +30,11 @@ Built with GLM-Edge
 
 
 ## Quick Start
-### 硬件需求：按照测试，只运行demo需空闲内存15GB，GPU显存3GB
+### 硬件需求
+按照测试，只运行demo需空闲内存15GB，GPU显存3GB
+
+### 环境安装
+使用 pip 安装依赖：pip install -r requirements.txt
+
+### 从本地加载模型
+原始的模型应该从[🤗 Huggingface](https://huggingface.co/THUDM/glm-edge-1.5b-chat)<br>
