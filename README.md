@@ -30,4 +30,4 @@ Built with GLM-Edge
 
 
 ## Quick Start
-** 硬件需求：按照测试，只运行demo需空闲内存15GB，GPU显存3GB
+### 硬件需求：按照测试，只运行demo需空闲内存15GB，GPU显存3GB
